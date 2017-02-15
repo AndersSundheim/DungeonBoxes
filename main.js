@@ -1,13 +1,35 @@
-genNew();
-$('#ex1').slider({
-	
+genNew(20,10,100,10,100);
+$('#ex1').slider({});
+var boxSlider = $("#ex1").slider();
+
+$("#ex2").slider({});
+
+var widthSlider = $("#ex2").slider();
+
+$("#ex3").slider({});
+
+var heightSlider = $("#ex3").slider();
+$("#ex2").on("slide", function(slideEvt) {
+	clear();
+	redraw(boxSlider.slider("getValue"),slideEvt.value[0],slideEvt.value[1],heightSlider.slider("getValue")[0],heightSlider.slider("getValue")[1]);
+});
+$("#ex1").on("slide", function(slideEvt) {
+	clear();
+	redraw(slideEvt.value,widthSlider.slider("getValue")[0],widthSlider.slider("getValue")[1],heightSlider.slider("getValue")[0],heightSlider.slider("getValue")[1]);
+});
+
+var heightSlider = $("#ex3").slider();
+
+$("#ex3").on("slide", function(slideEvt) {
+	clear();
+	redraw(boxSlider.slider("getValue"),widthSlider.slider("getValue")[0],widthSlider.slider("getValue")[1],slideEvt.value[0],slideEvt.value[1]);
 });
 window.onkeyup = function(e) {
    var key = e.keyCode ? e.keyCode : e.which;
 
    if (key == 82) {
        clear();
-	   redraw();
+	   redraw(boxSlider.slider("getValue"),widthSlider.slider("getValue")[0],widthSlider.slider("getValue")[1],heightSlider.slider("getValue")[0],heightSlider.slider("getValue")[1]);
    }
 }
 function same(x1,y1,x2,y2,edg){
@@ -57,10 +79,10 @@ function rando(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function gen(){
+function gen(widthParam1,widthParam2){
   var x1 = rando(0,window.innerWidth-530);
   var y1 = rando(0,window.innerHeight-110);
-  var w1 = rando(10,100);
+  var w1 = rando(widthParam1,widthParam2);
   var h1 = rando(10,100);
   var fail = false;
   for (var i=0;i<r.length;i++){
@@ -102,7 +124,7 @@ function doesexist(tab, val){
   }
   return false;
 } */
-function genNew(){
+function genNew(bb,wp1,wp2){
   l=[];
   r = [];
   drawtree = false;
@@ -112,10 +134,12 @@ function genNew(){
   edges = [];
   testEdges = [];
   testPts = [];
-   for (var i=0;i<100;i++) {  
-    t = gen();
+  var ctr = 0;
+  while(ctr!=bb) {  
+    t = gen(wp1,wp2);
     if (t!=null) {
       r.push([t[0],t[1],t[2],t[3]]);
+	  ctr++;
     }  
   }
   for (var j = 0;j<r.length;j++) {
@@ -177,8 +201,8 @@ function clear(){
 	var ctx = canvas.getContext("2d");
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
-function redraw(){
-	genNew();
+function redraw(numBoxes,wp1,wp2){
+	genNew(numBoxes,wp1,wp2);
 }
 function draw(){
   var canvas = document.getElementById("canvas");
