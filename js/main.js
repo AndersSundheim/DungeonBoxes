@@ -42,22 +42,21 @@ $("#show").click(function() {
 $('#ex1').slider({});
 var boxSlider = $("#ex1").slider();
 
-$("#ex2").slider({});
-
-var widthSlider = $("#ex2").slider();
-
-$("#ex3").slider({});
-
-var heightSlider = $("#ex3").slider();
-$("#ex2").on("slide", function(slideEvt) {
-    clear();
-    redraw(boxSlider.slider("getValue"), slideEvt.value[0], slideEvt.value[1], heightSlider.slider("getValue")[0], heightSlider.slider("getValue")[1]);
-});
 $("#ex1").on("slide", function(slideEvt) {
     clear();
     redraw(slideEvt.value, widthSlider.slider("getValue")[0], widthSlider.slider("getValue")[1], heightSlider.slider("getValue")[0], heightSlider.slider("getValue")[1]);
 });
 
+$("#ex2").slider({});
+
+var widthSlider = $("#ex2").slider();
+
+$("#ex2").on("slide", function(slideEvt) {
+    clear();
+    redraw(boxSlider.slider("getValue"), slideEvt.value[0], slideEvt.value[1], heightSlider.slider("getValue")[0], heightSlider.slider("getValue")[1]);
+});
+
+$("#ex3").slider({});
 var heightSlider = $("#ex3").slider();
 
 $("#ex3").on("slide", function(slideEvt) {
@@ -65,6 +64,18 @@ $("#ex3").on("slide", function(slideEvt) {
     clear();
     redraw(boxSlider.slider("getValue"), widthSlider.slider("getValue")[0], widthSlider.slider("getValue")[1], slideEvt.value[0], slideEvt.value[1]);
 });
+var upperWindow = 100;
+var lowerWindow = 10;
+$("#ex4").slider({});
+var gradientSlider = $("#ex4").slider();
+$("#ex4").on("slide", function(slideEvt) {
+	upperWindow = gradientSlider.slider("getValue")[1];
+	lowerWindow = gradientSlider.slider("getValue")[0];
+	draw();
+    //clear();
+    //redraw(boxSlider.slider("getValue"), widthSlider.slider("getValue")[0], widthSlider.slider("getValue")[1], heightSlider.slider("getValue")[0], heightSlider.slider("getValue")[1]);
+});
+
 window.onkeyup = function(e) {
     var key = e.keyCode ? e.keyCode : e.which;
 
@@ -256,7 +267,23 @@ function clear() {
 function redraw(numBoxes, wp1, wp2, hp1, hp2) {
     genNew(numBoxes, wp1, wp2, hp1, hp2);
 }
-
+function splitColor(s){
+	splitt = s.split(",");
+	splitt[0] = splitt[0].substring(4);
+	splitt[2] = splitt[2].substring(0,splitt[2].length-1);
+	//console.log(splitt);
+	return splitt;
+}
+function incrementColor(rgb){
+	//console.log(rgb);
+	//console.log("rgb(" + (parseInt(rgb[0])+50) + "," +  (parseInt(rgb[1])+50) + "," +(parseInt(rgb[2])+50) + ")");
+	return "rgb(" + (parseInt(rgb[0])+50) + "," +  (parseInt(rgb[1])+50) + "," +(parseInt(rgb[2])+50) + ")";
+}
+function decrementColor(rgb){
+	//console.log(rgb);
+	//console.log("rgb(" + (parseInt(rgb[0])+50) + "," +  (parseInt(rgb[1])+50) + "," +(parseInt(rgb[2])+50) + ")");
+	return "rgb(" + (parseInt(rgb[0])-50) + "," +  (parseInt(rgb[1])-50) + "," +(parseInt(rgb[2])-50) + ")";
+}
 function draw() {
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
@@ -266,6 +293,7 @@ function draw() {
     console.log(color);
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = boxColor;
+	splitColor(boxColor);
     /* for i=1,#l {
       love.graphics.setColor(255,255,255,255)
       ////love.graphics.line(l[i].x1,l[i].y1,l[i].x2,l[i].y2)
@@ -290,7 +318,13 @@ function draw() {
       //love.graphics.rectangle("line",tree[i].p1.x,tree[i].p1.y,tree[i].p2.x-tree[i].p1.x,tree[i].p2.y-tree[i].p1.y)
     } */
     for (var j = 0; j < r.length; j++) {
+		ctx.fillStyle = boxColor;
         if (r[j][0] != null) {
+			if((r[j][2]+r[j][3])/2<lowerWindow){
+				ctx.fillStyle = incrementColor(splitColor(boxColor));
+			}else if ((r[j][2]+r[j][3]/2)>upperWindow){
+				ctx.fillStyle = decrementColor(splitColor(boxColor));
+			}
             /* if (r[j][2]*r[j][3] > 4500) {
         love.graphics.setColor(200,200,200,255)
 		}else if r[j][2]*r[j][3] > 3000 {
