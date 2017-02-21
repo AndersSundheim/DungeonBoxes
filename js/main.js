@@ -21,6 +21,11 @@ $("#cp5").colorpicker({
     format: 'rgb'
 }).on('changeColor', function(e) {
     boxColor = e.color.toString("rgb");
+	document.getElementById("slider").children[0].children[0].style.background = incrementColor(splitColor(boxColor));
+	document.getElementById("slider").children[0].children[1].style.background = boxColor;
+	document.getElementById("slider").children[0].children[2].style.background = decrementColor(splitColor(boxColor));
+
+	$("#ex4.slider-track-low").css("background",boxColor);
     draw();
 });
 
@@ -66,11 +71,15 @@ $("#ex3").on("slide", function(slideEvt) {
 });
 var upperWindow = 100;
 var lowerWindow = 10;
-$("#ex4").slider({});
+$("#ex4").slider({id:"slider"});
+document.getElementById("slider").children[0].children[0].style.background = incrementColor(splitColor(boxColor));
+document.getElementById("slider").children[0].children[1].style.background = boxColor;
+document.getElementById("slider").children[0].children[2].style.background = decrementColor(splitColor(boxColor));
 var gradientSlider = $("#ex4").slider();
 $("#ex4").on("slide", function(slideEvt) {
 	upperWindow = gradientSlider.slider("getValue")[1];
 	lowerWindow = gradientSlider.slider("getValue")[0];
+	
 	draw();
     //clear();
     //redraw(boxSlider.slider("getValue"), widthSlider.slider("getValue")[0], widthSlider.slider("getValue")[1], heightSlider.slider("getValue")[0], heightSlider.slider("getValue")[1]);
