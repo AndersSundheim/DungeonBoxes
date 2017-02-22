@@ -7,7 +7,9 @@ $("#save").click(function() {
     document.write('<img src="' + img + '"/>');
 })
 $("#fullscreen").click(function() {
-    alert("Fullscreen Recommended for Wallpapers");
+	var elem = document.body; // Make the body go full screen.
+	requestFullScreen(elem);
+	//alert("Fullscreen Recommended for Wallpapers");
 });
 
 $("#cp4").colorpicker({
@@ -25,17 +27,25 @@ $("#cp5").colorpicker({
 	document.getElementById("slider").children[0].children[1].style.background = boxColor;
 	document.getElementById("slider").children[0].children[2].style.background = decrementColor(splitColor(boxColor));
 
-	$("#ex4.slider-track-low").css("background",boxColor);
+	//$("#ex4.slider-track-low").css("background",boxColor);
     draw();
 });
 
-function requestFullScreen() {
-    if (document.fullscreenEnabled) {
-        document.getElementById("canvas").requestFullScreen();
-    } else {
-        console.log('Your browser cannot use fullscreen right now');
+function requestFullScreen(element) {
+    // Supports most browsers and their versions.
+    var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullScreen;
+
+    if (requestMethod) { // Native full screen.
+        requestMethod.call(element);
+    } else if (typeof window.ActiveXObject !== "undefined") { // Older IE.
+        var wscript = new ActiveXObject("WScript.Shell");
+        if (wscript !== null) {
+            wscript.SendKeys("{F11}");
+        }
     }
 }
+
+
 $("#hide").click(function() {
     $("#controls").hide();
     document.getElementById("hidden").style.display = "inline";
@@ -79,7 +89,6 @@ var gradientSlider = $("#ex4").slider();
 $("#ex4").on("slide", function(slideEvt) {
 	upperWindow = gradientSlider.slider("getValue")[1];
 	lowerWindow = gradientSlider.slider("getValue")[0];
-	
 	draw();
     //clear();
     //redraw(boxSlider.slider("getValue"), widthSlider.slider("getValue")[0], widthSlider.slider("getValue")[1], heightSlider.slider("getValue")[0], heightSlider.slider("getValue")[1]);
